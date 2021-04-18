@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: nfs-bucket-server
+spec:
+  replicas: 5 
+  selector:
+   matchLabels:
+     role: nfs-bucket-server
+  template:
+    metadata:
+      labels:
+        role: nfs-bucket-server
+    spec:
+      volumes:
+        - name: terraform
+          secret:
+            secretName: terraform
+      containers:
+      - name: nfs-bucket-server
+        image: gcr.io/inspiring-cat-308916/nfs-bucket-server:latest
+        env:
+        - name: BUCKET
+          value: "footest-bucket"
+        ports:
+          - name: nfs
+            containerPort: 2049
+#          - name: mountd
+#            containerPort: 20048
+#          - name: rpcbind
+#            containerPort: 111
+        volumeMounts:
+          - name: terraform 
+            mountPath: "/accounts/key.json"
+            readOnly: true
+        securityContext:
+          privileged: true

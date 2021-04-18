@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfs-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: nfs-test
+  template:
+    metadata:
+      labels:
+        role: nfs-test
+    spec:
+      containers:
+      - image: gcr.io/inspiring-cat-308916/nginx:1.14.2  
+        imagePullPolicy: IfNotPresent
+        name: busybox
+        volumeMounts:
+          # name must match the volume name below
+          - name: nfs-bucket
+            mountPath: "/mnt"
+      volumes:
+      - name: nfs-bucket
+        persistentVolumeClaim:
+          claimName: nfs-bucket
