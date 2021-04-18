@@ -1,0 +1,1 @@
+# gcs-bucket-k8s
